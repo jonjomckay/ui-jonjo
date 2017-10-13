@@ -1,7 +1,7 @@
 import React from 'react';
 
-const Unknown = ({ type }) => {
-    console.log('An unknown component type (' + type + ') was mounted');
+const Unknown = ({ component }) => {
+    console.log('An unknown component type (' + component.componentType + ') was mounted');
 
     return (
         <div />

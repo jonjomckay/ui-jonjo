@@ -6,46 +6,66 @@ import Navigation from "./Navigation";
 import Page from "./Page";
 
 import 'bootstrap/dist/css/bootstrap.css';
+import 'open-iconic/font/css/open-iconic-bootstrap.css';
 import 'react-loading-bar/dist/index.css';
 import './Flow.css';
+import RunClient from "../clients/RunClient";
+import AuthenticationPrompt from "./AuthenticationPrompt";
 
 class Flow extends Component {
     state = {
         invoke: {
+            authorizationContext: {
+                loginUrl: ''
+            },
             mapElementInvokeResponses: [],
             navigationElementReferences: [],
-            stateId: ''
+            stateId: '',
+            statusCode: ''
         },
-        isLoading: false
+        isLoading: false,
+        token: ''
     };
 
     componentDidMount = () => {
         axios.defaults.headers.common['ManyWhoTenant'] = this.props.tenant;
         axios.interceptors.request.use(config => {
-            this.setState({
-                isLoading: true
-            });
+            // Only set the page's loading state if this isn't an ObjectDataRequest (LOL)
+            if (config.url.endsWith('api/service/1/data') === false) {
+                this.setState({
+                    isLoading: true
+                });
+            }
 
             return config;
         });
+
         axios.interceptors.response.use((response) => {
-            this.setState({
-                isLoading: false
-            });
+            // Only set the page's loading state if this isn't an ObjectDataRequest (LOL)
+            if (response.config.url.endsWith('api/service/1/data') === false) {
+                this.setState({
+                    isLoading: false
+                });
+            }
 
             return response;
         });
 
-        if (this.props.developerName) {
-            const body = {
-                developerName: this.props.developerName
-            };
+        this.initialize();
+    };
 
-            axios.post('https://staging.manywho.com/api/run/1/state', body)
-                .then(response => this.setState({
-                    invoke: response.data
-                }));
+    initialize = () => {
+        let result;
+
+        if (this.props.developerName) {
+            result = RunClient.initializeSimpleWithDeveloperName(this.props.developerName);
+        } else {
+            result = RunClient.initializeSimple(this.props.id, this.props.version);
         }
+
+        result.then(response => this.setState({
+            invoke: response.data
+        }));
     };
 
     // Extract
@@ -83,27 +103,55 @@ class Flow extends Component {
             }));
     };
 
-    render() {
-        // console.log(this.state.invoke);
+    onSubmitAuthentication = (username, password) => {
+        const body = {
+            username: username,
+            password: password,
+            loginUrl: this.state.invoke.authorizationContext.loginUrl
+        };
 
+        axios.post('https://staging.manywho.com/api/run/1/authentication/' + this.state.invoke.stateId, body)
+            .then(response => {
+                axios.defaults.headers.common['Authorization'] = response.data;
+
+                this.setState({
+                    token: response.data
+                })
+            })
+            .then(response => this.initialize());
+    };
+
+    render() {
         let navigation;
-        if (this.state.invoke.navigationElementReferences.length) {
-            navigation = (
-                <Navigation onClickItem={ this.onClickNavigationItem }
-                            reference={ this.state.invoke.navigationElementReferences[0] }
-                            state={ this.state.invoke.stateId }
-                            stateToken={ this.state.invoke.stateToken }
-                            tenant={ this.props.tenant } />
-            )
-        }
 
         let page;
-        if (this.state.invoke.mapElementInvokeResponses.length) {
-            page = (
-                <Page onClickOutcome={ this.onClickOutcome }
-                      outcomes={ this.state.invoke.mapElementInvokeResponses[0].outcomeResponses || [] }
-                      response={ this.state.invoke.mapElementInvokeResponses[0].pageResponse } />
-            )
+        if (this.state.invoke.statusCode === '401') {
+            switch (this.state.invoke.authorizationContext.authenticationType) {
+                case 'USERNAME_PASSWORD':
+                    page = <AuthenticationPrompt onSubmit={ this.onSubmitAuthentication } />;
+                    break;
+                default:
+                    page = 'An unknown authentication type was provided by the flow';
+                    break;
+            }
+        } else {
+            if (this.state.invoke.navigationElementReferences.length) {
+                navigation = (
+                    <Navigation onClickItem={ this.onClickNavigationItem }
+                                reference={ this.state.invoke.navigationElementReferences[0] }
+                                state={ this.state.invoke.stateId }
+                                stateToken={ this.state.invoke.stateToken }
+                                tenant={ this.props.tenant } />
+                )
+            }
+
+            if (this.state.invoke.mapElementInvokeResponses.length) {
+                page = (
+                    <Page onClickOutcome={ this.onClickOutcome }
+                          outcomes={ this.state.invoke.mapElementInvokeResponses[0].outcomeResponses || [] }
+                          response={ this.state.invoke.mapElementInvokeResponses[0].pageResponse } />
+                )
+            }
         }
 
         return (

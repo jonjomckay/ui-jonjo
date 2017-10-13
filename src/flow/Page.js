@@ -12,14 +12,14 @@ class Page extends Component {
 
     componentDidMount = () => {
         this.setState({
-            containers: this.convertContainers(this.props.response)
+            containers: this.convertContainers(this.props.response, this.props.response.pageContainerResponses)
         });
     };
 
     componentWillReceiveProps = (nextProps) => {
         if (nextProps.response !== this.props.response) {
             this.setState({
-                containers: this.convertContainers(nextProps.response)
+                containers: this.convertContainers(nextProps.response, nextProps.response.pageContainerResponses)
             });
         }
     };
@@ -35,34 +35,42 @@ class Page extends Component {
     };
 
     // Extract
-    convertContainers = (page) => {
-        return page.pageContainerResponses.map(container => {
-            const components = page.pageComponentResponses.filter(component => component.pageContainerId === container.id)
-                .map(component => this.convertComponent(page, component));
+    convertContainers = (page, containers) => {
+        return (containers || [])
+            .sort((a, b) => a.order - b.order)
+            .map(container => {
+                const components = page.pageComponentResponses.filter(component => component.pageContainerId === container.id)
+                    .sort((a, b) => a.order - b.order)
+                    .map(component => this.convertComponent(page, component));
 
-            return {
-                ...container,
-                components: components
-            };
-        });
+                return {
+                    ...container,
+                    components: components,
+                    containers: this.convertContainers(page, container.pageContainerResponses)
+                };
+            });
     };
 
     render() {
         const containers = this.state.containers.map(container => {
             return (
-                <PageContainer container={ container } key={ container.id } />
+                <PageContainer container={ container } key={ container.id } outcomes={ this.props.outcomes } />
             );
         });
 
-        const outcomes = this.props.outcomes.map(outcome => {
-            return (
-                <Outcome key={ outcome.id } onClick={ this.props.onClickOutcome } outcome={ outcome } />
-            );
-        });
+        const outcomes = this.props.outcomes
+            .filter(outcome => outcome.pageObjectBindingId === null)
+            .map(outcome => {
+                return (
+                    <Outcome key={ outcome.id } onClick={ this.props.onClickOutcome } outcome={ outcome } />
+                );
+            });
 
         return (
             <div className="page">
-                { containers }
+                <div className="container">
+                    { containers }
+                </div>
 
                 <div className="container outcomes">
                     { outcomes }
