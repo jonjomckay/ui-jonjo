@@ -56,7 +56,7 @@ class Navigation extends Component {
 
         return {
             id: this.props.reference.id,
-            name: response.developerName,
+            name: response.label,
             items: items
         }
     };
