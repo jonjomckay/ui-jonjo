@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import PageContainer from "./PageContainer";
 import Outcome from "./Outcome";
 
@@ -54,7 +55,7 @@ class Page extends Component {
     render() {
         const containers = this.state.containers.map(container => {
             return (
-                <PageContainer container={ container } key={ container.id } outcomes={ this.props.outcomes } />
+                <PageContainer container={ container } key={ container.id } />
             );
         });
 
@@ -89,4 +90,10 @@ Page.propTypes = {
     response: PropTypes.object.isRequired
 };
 
-export default Page;
+const mapStateToProps = state => {
+    return {
+        outcomes: state.outcomes.outcomes
+    };
+};
+
+export default connect(mapStateToProps)(Page);

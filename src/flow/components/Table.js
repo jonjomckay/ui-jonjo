@@ -1,11 +1,12 @@
 import React, { Component } from 'react';
 import Loading from 'react-loading-bar';
+import { connect } from 'react-redux';
 import axios from 'axios';
 import { Sorts } from "../../utils/Sorts";
 
 import './Table.css';
 
-export default class Table extends Component {
+class Table extends Component {
     state = {
         isLoading: false,
         objectData: [],
@@ -150,3 +151,11 @@ export default class Table extends Component {
         )
     }
 }
+
+const mapStateToProps = (state, ownProps) => {
+    return {
+        outcomes: state.outcomes.outcomes.filter(outcome => outcome.pageObjectBindingId === ownProps.component.id)
+    };
+};
+
+export default connect(mapStateToProps)(Table);

@@ -41,11 +41,10 @@ export default class GroupContainer extends Component {
         }
 
         const containers = group.containers.map(container => {
-            return <PageContainer components={ group.components } container={ container } key={ container.id } outcomes={ this.props.outcomes } />
+            return <PageContainer components={ group.components } container={ container } key={ container.id } />
         });
 
-        const components = group.components
-            .map(component => ComponentFactory.createComponent(component, this.props.outcomes));
+        const components = group.components.map(ComponentFactory.createComponent);
 
         return (
             <div className="d-flex flex-column">

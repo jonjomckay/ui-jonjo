@@ -4,17 +4,17 @@ import VerticalContainer from "./containers/VerticalContainer";
 import HorizontalContainer from "./containers/HorizontalContainer";
 import GroupContainer from "./containers/GroupContainer";
 import ComponentFactory from "./components/ComponentFactory";
+import { Sorts } from "../utils/Sorts";
 
 class PageContainer extends Component {
     render() {
-        const containers = (this.props.container.containers || [])
-            .sort((a, b) => a.order - b.order)
+        // Created instances of all the nested containers
+        const containers = (this.props.container.containers || []).sort(Sorts.byOrder)
             .map(container => {
-                return <PageContainer container={ container } key={ container.id } outcomes={ this.props.outcomes } />
+                return <PageContainer container={ container } key={ container.id } />
             });
 
-        const components = this.props.container.components
-            .map(component => ComponentFactory.createComponent(component, this.props.outcomes));
+        const components = this.props.container.components.map(ComponentFactory.createComponent);
 
         const props = {
             components: components,

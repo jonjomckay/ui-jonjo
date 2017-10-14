@@ -22,11 +22,10 @@ const getComponent = (type) => {
 
 export default class ComponentFactory {
     // Extract?
-    static createComponent = (component, outcomes = []) => {
+    static createComponent = (component) => {
         return React.createElement(getComponent(component.componentType), {
             component: component,
-            key: component.id,
-            outcomes: outcomes.filter(outcome => outcome.pageObjectBindingId === component.id)
+            key: component.id
         });
     };
 }
