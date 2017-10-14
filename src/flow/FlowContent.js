@@ -49,27 +49,19 @@ class FlowContent extends Component {
             result = RunClient.initializeSimple(this.props.id, this.props.version);
         }
 
-        result.then(this.setInvokeResponse);
+        result.then(this.props.setInvoke);
     };
 
     // Extract
     onClickNavigationItem = (navigation, item) => {
         RunClient.selectNavigationItem(this.props.invoke, navigation, item)
-            .then(this.setInvokeResponse);
+            .then(this.props.setInvoke);
     };
 
     onSubmitAuthentication = (username, password) => {
         RunClient.authenticate(this.props.invoke, username, password)
             .then(response => axios.defaults.headers.common['Authorization'] = response)
             .then(response => this.initialize());
-    };
-
-    setInvokeResponse = (invoke) => {
-        if (invoke.mapElementInvokeResponses) {
-            this.props.setOutcomes(invoke.mapElementInvokeResponses[0].outcomeResponses || []);
-        }
-
-        this.props.setInvoke(invoke);
     };
 
     render() {
@@ -124,12 +116,6 @@ const mapDispatchToProps = dispatch => {
             dispatch({
                 type: 'SET_INVOKE',
                 invoke: invoke
-            });
-        },
-        setOutcomes: outcomes => {
-            dispatch({
-                type: 'SET_OUTCOMES',
-                outcomes: outcomes
             });
         }
     }

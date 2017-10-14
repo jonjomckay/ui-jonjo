@@ -1,5 +1,7 @@
 const defaultState = {
-    outcomes: []
+    outcome: {
+
+    }
 };
 
 const OutcomeReducer = (state = defaultState, action) => {
@@ -8,11 +10,6 @@ const OutcomeReducer = (state = defaultState, action) => {
             return {
                 ...state,
                 outcome: action.outcome
-            };
-        case 'SET_OUTCOMES':
-            return {
-                ...state,
-                outcomes: action.outcomes
             };
         default:
             return state;

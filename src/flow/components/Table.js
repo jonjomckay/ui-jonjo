@@ -154,7 +154,7 @@ class Table extends Component {
 
 const mapStateToProps = (state, ownProps) => {
     return {
-        outcomes: state.outcomes.outcomes.filter(outcome => outcome.pageObjectBindingId === ownProps.component.id)
+        outcomes: state.flow.outcomes.filter(outcome => outcome.pageObjectBindingId === ownProps.component.id)
     };
 };
 

@@ -92,7 +92,7 @@ Page.propTypes = {
 
 const mapStateToProps = state => {
     return {
-        outcomes: state.outcomes.outcomes
+        outcomes: state.flow.outcomes
     };
 };
 

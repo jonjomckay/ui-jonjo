@@ -2,6 +2,7 @@ import React from 'react';
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
 import { applyMiddleware, combineReducers, createStore } from 'redux';
+import logger from 'redux-logger';
 import thunkMiddleware from 'redux-thunk';
 import FlowContent from "./FlowContent";
 import FlowReducer from "./FlowReducer";
@@ -15,7 +16,7 @@ import './Flow.css';
 const store = createStore(combineReducers({
     flow: FlowReducer,
     outcomes: OutcomeReducer
-}), applyMiddleware(thunkMiddleware));
+}), applyMiddleware(thunkMiddleware, logger));
 
 const Flow = (props) => (
     <Provider store={ store }>
