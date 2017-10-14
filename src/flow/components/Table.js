@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Loading from 'react-loading-bar';
 import axios from 'axios';
-import update from 'immutability-helper';
 import { Sorts } from "../../utils/Sorts";
 
 import './Table.css';
@@ -27,12 +26,10 @@ export default class Table extends Component {
     fetchData = (objectDataRequest) => {
         const request = objectDataRequest || this.state.objectDataRequest || this.props.component.data.objectDataRequest;
 
-        if (this.state.search) {
-            request.listFilter = {
-                ...request.listFilter,
-                search: this.state.search
-            };
-        }
+        request.listFilter = {
+            ...request.listFilter,
+            search: this.state.search
+        };
 
         this.setState({
             isLoading: true,
@@ -109,24 +106,13 @@ export default class Table extends Component {
         let refreshButton;
         if (this.state.objectDataRequest) {
             refreshButton = (
-                <div className="col-sm-auto refresh">
+                <div className="col-auto refresh">
                     <button className="btn btn-primary" onClick={ this.onClickRefresh }>
                         <span className="oi oi-reload" />
                     </button>
                 </div>
             );
         }
-
-        // let table;
-        // if (rows.length || this.state.isLoading) {
-        //     table = (
-
-        //     );
-        // } else {
-        //     table = (
-        //         <p>No results</p>
-        //     )
-        // }
 
         return (
             <div className="table">
