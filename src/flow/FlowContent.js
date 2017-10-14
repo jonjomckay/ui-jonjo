@@ -10,17 +10,7 @@ import Page from "./Page";
 
 class FlowContent extends Component {
     state = {
-        invoke: {
-            authorizationContext: {
-                loginUrl: ''
-            },
-            mapElementInvokeResponses: [],
-            navigationElementReferences: [],
-            stateId: '',
-            statusCode: ''
-        },
-        isLoading: false,
-        token: ''
+        isLoading: false
     };
 
     componentDidMount = () => {
@@ -63,44 +53,36 @@ class FlowContent extends Component {
     };
 
     // Extract
-    onClickOutcome = (id) => {
-        RunClient.selectOutcome(this.state.invoke, id)
+    onClickOutcome = (outcome) => {
+        RunClient.selectOutcome(this.props.invoke, outcome)
             .then(this.setInvokeResponse);
     };
 
     onClickNavigationItem = (navigation, item) => {
-        RunClient.selectNavigationItem(this.state.invoke, navigation, item)
+        RunClient.selectNavigationItem(this.props.invoke, navigation, item)
             .then(this.setInvokeResponse);
     };
 
     onSubmitAuthentication = (username, password) => {
-        RunClient.authenticate(this.state.invoke, username, password)
-            .then(response => {
-                axios.defaults.headers.common['Authorization'] = response.data;
-
-                this.setState({
-                    token: response.data
-                })
-            })
+        RunClient.authenticate(this.props.invoke, username, password)
+            .then(response => axios.defaults.headers.common['Authorization'] = response)
             .then(response => this.initialize());
     };
 
-    setInvokeResponse = (response) => {
-        if (response.data.mapElementInvokeResponses) {
-            this.props.setOutcomes(response.data.mapElementInvokeResponses[0].outcomeResponses || []);
+    setInvokeResponse = (invoke) => {
+        if (invoke.mapElementInvokeResponses) {
+            this.props.setOutcomes(invoke.mapElementInvokeResponses[0].outcomeResponses || []);
         }
 
-        this.setState({
-            invoke: response.data
-        });
+        this.props.setInvoke(invoke);
     };
 
     render() {
         let navigation;
 
         let page;
-        if (this.state.invoke.statusCode === '401') {
-            switch (this.state.invoke.authorizationContext.authenticationType) {
+        if (this.props.invoke.statusCode === '401') {
+            switch (this.props.invoke.authorizationContext.authenticationType) {
                 case 'USERNAME_PASSWORD':
                     page = <AuthenticationPrompt onSubmit={ this.onSubmitAuthentication } />;
                     break;
@@ -109,20 +91,16 @@ class FlowContent extends Component {
                     break;
             }
         } else {
-            if (this.state.invoke.navigationElementReferences.length) {
+            if (this.props.invoke.navigationElementReferences.length) {
                 navigation = (
                     <Navigation onClickItem={ this.onClickNavigationItem }
-                                reference={ this.state.invoke.navigationElementReferences[0] }
-                                state={ this.state.invoke.stateId }
-                                stateToken={ this.state.invoke.stateToken }
-                                tenant={ this.props.tenant } />
+                                reference={ this.props.invoke.navigationElementReferences[0] } />
                 )
             }
 
-            if (this.state.invoke.mapElementInvokeResponses.length) {
+            if (this.props.invoke.mapElementInvokeResponses.length) {
                 page = (
-                    <Page onClickOutcome={ this.onClickOutcome }
-                          response={ this.state.invoke.mapElementInvokeResponses[0].pageResponse } />
+                    <Page response={ this.props.invoke.mapElementInvokeResponses[0].pageResponse } />
                 )
             }
         }
@@ -139,8 +117,20 @@ class FlowContent extends Component {
     }
 }
 
+const mapStateToProps = state => {
+    return {
+        invoke: state.flow.invoke
+    };
+};
+
 const mapDispatchToProps = dispatch => {
     return {
+        setInvoke: invoke => {
+            dispatch({
+                type: 'SET_INVOKE',
+                invoke: invoke
+            });
+        },
         setOutcomes: outcomes => {
             dispatch({
                 type: 'SET_OUTCOMES',
@@ -150,4 +140,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(null, mapDispatchToProps)(FlowContent);
+export default connect(mapStateToProps, mapDispatchToProps)(FlowContent);

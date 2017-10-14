@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import axios from 'axios';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -23,12 +24,12 @@ class Navigation extends Component {
     // Extract
     fetchNavigation = () => {
         const body = {
-            stateId: this.props.state,
-            stateToken: this.props.stateToken,
+            stateId: this.props.invoke.stateId,
+            stateToken: this.props.invoke.stateToken,
             navigationElementId: this.props.reference.id
         };
 
-        axios.post('https://staging.manywho.com/api/run/1/navigation/' + this.props.state, body)
+        axios.post('https://staging.manywho.com/api/run/1/navigation/' + this.props.invoke.stateId, body)
             .then(response => this.createNavigation(response.data))
             .then(response => this.setState({
                 navigation: response
@@ -36,7 +37,7 @@ class Navigation extends Component {
     };
 
     componentWillReceiveProps = (nextProps) => {
-        if (nextProps.stateToken !== this.props.stateToken) {
+        if (nextProps.invoke.stateToken !== this.props.invoke.stateToken) {
             this.fetchNavigation();
         }
     };
@@ -110,4 +111,10 @@ Navigation.propTypes = {
     })
 };
 
-export default Navigation;
+const mapStateToProps = state => {
+    return {
+        invoke: state.flow.invoke
+    };
+};
+
+export default connect(mapStateToProps)(Navigation);

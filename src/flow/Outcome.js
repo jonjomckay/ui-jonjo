@@ -1,23 +1,23 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
+import { selectOutcome } from './FlowActions';
 
 import './Outcome.css';
 
-export default class Outcome extends Component {
-    onClick = (e) => {
-        e.preventDefault();
+const Outcome = ({ onClick, outcome }) => (
+    <span className="outcome">
+        <button className="btn btn-primary" onClick={ onClick } type="button">
+            { outcome.label }
+        </button>
+    </span>
+);
 
-        this.props.onClick(this.props.outcome.id);
-    };
-
-    render() {
-        const outcome = this.props.outcome;
-
-        return (
-            <span className="outcome">
-                <button className="btn btn-primary" onClick={ this.onClick } type="button">
-                    { outcome.label }
-                </button>
-            </span>
-        )
+const mapDispatchToProps = (dispatch, ownProps) => {
+    return {
+        onClick: () => {
+            dispatch(selectOutcome(ownProps.outcome));
+        }
     }
-}
+};
+
+export default connect(null, mapDispatchToProps)(Outcome);

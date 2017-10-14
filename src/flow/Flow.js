@@ -1,8 +1,10 @@
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
 import PropTypes from 'prop-types';
-import { combineReducers, createStore } from 'redux';
+import { applyMiddleware, combineReducers, createStore } from 'redux';
+import thunkMiddleware from 'redux-thunk';
 import FlowContent from "./FlowContent";
+import FlowReducer from "./FlowReducer";
 import OutcomeReducer from './OutcomeReducer';
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -11,8 +13,9 @@ import 'react-loading-bar/dist/index.css';
 import './Flow.css';
 
 const store = createStore(combineReducers({
+    flow: FlowReducer,
     outcomes: OutcomeReducer
-}));
+}), applyMiddleware(thunkMiddleware));
 
 const Flow = (props) => (
     <Provider store={ store }>

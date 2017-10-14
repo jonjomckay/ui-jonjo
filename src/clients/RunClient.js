@@ -11,19 +11,26 @@ export default class RunClient {
         };
 
         return axios.post(BASE_URL + '/api/run/1/authentication/' + invoke.stateId, body)
+            .then(response => response.data);
     };
 
     static initializeSimple = (id, version) => {
-        return axios.post(BASE_URL + '/api/run/1/state', {
+        const body = {
             id: id,
             versionId: version
-        });
+        };
+
+        return axios.post(BASE_URL + '/api/run/1/state', body)
+            .then(response => response.data);
     };
 
     static initializeSimpleWithDeveloperName = (developerName) => {
-        return axios.post(BASE_URL + '/api/run/1/state', {
+        const body = {
             developerName: developerName
-        });
+        };
+
+        return axios.post(BASE_URL + '/api/run/1/state', body)
+            .then(response => response.data);
     };
 
     static selectNavigationItem = (invoke, navigation, item) => {
@@ -37,7 +44,8 @@ export default class RunClient {
             selectedNavigationItemId: item.id
         };
 
-        return axios.post(BASE_URL + '/api/run/1/state/' + invoke.stateId, body);
+        return axios.post(BASE_URL + '/api/run/1/state/' + invoke.stateId, body)
+            .then(response => response.data);
     };
 
     static selectOutcome = (invoke, outcome) => {
@@ -47,10 +55,11 @@ export default class RunClient {
             currentMapElementId: invoke.currentMapElementId,
             invokeType: 'FORWARD',
             mapElementInvokeRequest: {
-                selectedOutcomeId: outcome
+                selectedOutcomeId: outcome.id
             }
         };
 
-        return axios.post(BASE_URL + '/api/run/1/state/' + invoke.stateId, body);
+        return axios.post(BASE_URL + '/api/run/1/state/' + invoke.stateId, body)
+            .then(response => response.data);
     };
 }
