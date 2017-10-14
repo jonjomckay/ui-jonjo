@@ -49,13 +49,15 @@ export default class GroupContainer extends Component {
 
         return (
             <div className="d-flex flex-column">
-                <nav className="nav nav-tabs">
+                <nav className="nav nav-tabs mb-2">
                     { groupTabs }
                 </nav>
 
                 { containers }
 
-                { components }
+                <div className="my-2">
+                    { components }
+                </div>
             </div>
         )
     }

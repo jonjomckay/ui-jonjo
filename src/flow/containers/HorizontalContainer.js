@@ -1,4 +1,7 @@
 import React, { Component } from 'react';
+import classNames from 'classnames';
+
+import './HorizontalContainer.css';
 
 export default class HorizontalContainer extends Component {
     render() {
@@ -8,11 +11,17 @@ export default class HorizontalContainer extends Component {
             label = <h3>{ this.props.container.label }</h3>
         }
 
+        const classes = classNames({
+            'd-flex flex-row': this.props.containers.length < 2,
+            'mx-0': true,
+            'row': this.props.containers.length > 1
+        });
+
         return (
-            <div>
+            <div className="container-horizontal">
                 { label }
 
-                <div className="d-flex flex-row my-2">
+                <div className={ classes }>
                     { this.props.containers }
                     { this.props.components }
                 </div>
