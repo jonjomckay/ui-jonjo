@@ -1,2 +1,3 @@
 * Store outcomes in Redux/whatever
 * Add Redux action for onOutcomeClick
+* Add notifications and errors to Redux
