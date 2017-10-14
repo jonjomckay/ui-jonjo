@@ -63,7 +63,7 @@ class Page extends Component {
             .filter(outcome => outcome.pageObjectBindingId === null)
             .map(outcome => {
                 return (
-                    <Outcome key={ outcome.id } onClick={ this.props.onClickOutcome } outcome={ outcome } />
+                    <Outcome key={ outcome.id } outcome={ outcome } />
                 );
             });
 

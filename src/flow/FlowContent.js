@@ -53,11 +53,6 @@ class FlowContent extends Component {
     };
 
     // Extract
-    onClickOutcome = (outcome) => {
-        RunClient.selectOutcome(this.props.invoke, outcome)
-            .then(this.setInvokeResponse);
-    };
-
     onClickNavigationItem = (navigation, item) => {
         RunClient.selectNavigationItem(this.props.invoke, navigation, item)
             .then(this.setInvokeResponse);
