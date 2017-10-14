@@ -1,5 +1,7 @@
 import React, { Component } from 'react';
 
+import './Outcome.css';
+
 export default class Outcome extends Component {
     onClick = (e) => {
         e.preventDefault();
@@ -11,9 +13,11 @@ export default class Outcome extends Component {
         const outcome = this.props.outcome;
 
         return (
-            <button className="btn btn-primary" onClick={ this.onClick } type="button">
-                { outcome.label }
-            </button>
+            <span className="outcome">
+                <button className="btn btn-primary" onClick={ this.onClick } type="button">
+                    { outcome.label }
+                </button>
+            </span>
         )
     }
 }
