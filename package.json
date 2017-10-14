@@ -6,7 +6,6 @@
     "axios": "^0.16.2",
     "bootstrap": "4.0.0-beta",
     "classnames": "^2.2.5",
-    "immutability-helper": "^2.4.0",
     "open-iconic": "^1.1.1",
     "prop-types": "^15.6.0",
     "react": "^16.0.0",
