@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import PageContainer from "../PageContainer";
-import ComponentFactory from "../components/ComponentFactory";
+import { connect } from 'react-redux';
+import PageContainer from '../PageContainer';
+import ComponentFactory from '../ComponentFactory';
 
 class GroupTab extends Component {
     onClick = () => {
@@ -16,7 +17,7 @@ class GroupTab extends Component {
     }
 }
 
-export default class GroupContainer extends Component {
+class Group extends Component {
     state = {
         selected: ''
     };
@@ -44,7 +45,9 @@ export default class GroupContainer extends Component {
             return <PageContainer components={ group.components } container={ container } key={ container.id } />
         });
 
-        const components = group.components.map(ComponentFactory.createComponent);
+        const components = group.components.map(component => {
+            return ComponentFactory.createComponent(this.props.values, component);
+        });
 
         return (
             <div className="d-flex flex-column">
@@ -61,3 +64,11 @@ export default class GroupContainer extends Component {
         )
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        values: state.flow.values
+    };
+};
+
+export default connect(mapStateToProps)(Group);

@@ -1,28 +1,23 @@
 import React from 'react';
 
-import Presentation from "./Presentation";
-import Unknown from "./Unknown";
-import Input from "./Input";
-import Textarea from "./Textarea";
-import Table from "./Table";
+import Presentation from './components/Presentation';
+import Unknown from './components/Unknown';
 
-// Extract
+// TODO: Extract this all to be renderer-agnostic
 const components = {
-    'input': Input,
+    // 'input': Input,
     'presentation': Presentation,
-    'table': Table,
-    'textarea': Textarea,
+    // 'table': Table,
+    // 'textarea': Textarea,
     'unknown': Unknown
 };
 
-// Extract
 const getComponent = (type) => {
     return components[type.toLowerCase()] || Unknown;
 };
 
 export default class ComponentFactory {
-    // Extract?
-    static createComponent = (component) => {
+    static createComponent = (values, component) => {
         return React.createElement(getComponent(component.componentType), {
             component: component,
             key: component.id
