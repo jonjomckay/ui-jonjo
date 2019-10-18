@@ -5,11 +5,9 @@ import PageContainers from './PageContainers';
 export default () => {
     return (
         <div className="page">
-            <div className="container">
-                <PageContainers />
-            </div>
+            <PageContainers />
 
-            <div className="container outcomes">
+            <div className="outcomes">
                 <Outcomes />
             </div>
         </div>

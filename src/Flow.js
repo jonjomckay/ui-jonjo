@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import { connect } from "react-redux";
 import Loading from 'react-loading-bar';
-import { initializeFlow } from "./core/flow/FlowActions";
+import { simpleInitializeFlow } from "./core/flow/FlowActions";
 import Navigations from "./bootstrap/navigation/Navigations";
 
 import 'bootstrap/dist/css/bootstrap.css';
 import 'react-loading-bar/dist/index.css';
 import './Flow.css';
 import Page from "./bootstrap/page/Page";
+import Error from "./bootstrap/errors/Error";
 
 class Flow extends Component {
     componentDidMount = () => {
-        initializeFlow(this.props.dispatch, this.props.tenant, this.props.id, this.props.version);
+        this.props.simpleInitializeFlow(this.props.tenant, this.props.id, this.props.version);
     };
 
     render() {
@@ -21,7 +22,11 @@ class Flow extends Component {
 
                 <Navigations />
 
-                <Page />
+                <div className="container">
+                    <Error error={ this.props.error } />
+
+                    <Page />
+                </div>
             </div>
         )
     }
@@ -29,14 +34,13 @@ class Flow extends Component {
 
 const mapStateToProps = state => {
     return {
+        error: state.flow.error,
         isLoading: state.flow.isLoadingInvoke || state.flow.isLoadingNavigation
     }
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        dispatch
-    }
+const mapDispatchToProps = {
+    simpleInitializeFlow,
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Flow);

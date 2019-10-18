@@ -1,5 +1,12 @@
 import update from 'immutability-helper';
 import { Sorts } from '../Sorts';
+import {
+    FLOW_INVOKE_LOADING,
+    FLOW_INVOKE_FINISHED,
+    FLOW_NAVIGATE_LOADING,
+    FLOW_NAVIGATE_FINISHED,
+    FLOW_INVOKE_ERRORED
+} from "./FlowActions";
 
 const defaultFlowState = {
     navigations: [],
@@ -40,12 +47,18 @@ const convertContainers = (page, containers) => {
 
 export const flowReducer = (state = defaultFlowState, action) => {
     switch (action.type) {
-        case 'FLOW_INVOKE_LOADING':
+        case FLOW_INVOKE_ERRORED:
+            return {
+                ...state,
+                isLoadingInvoke: false,
+                error: action.error
+            };
+        case FLOW_INVOKE_LOADING:
             return {
                 ...state,
                 isLoadingInvoke: true
             };
-        case 'FLOW_INVOKED':
+        case FLOW_INVOKE_FINISHED:
             const outcomes = (action.data.mapElementInvokeResponses[0].outcomeResponses || [])
                 .filter(outcome => outcome.pageObjectBindingId === null);
 
@@ -61,12 +74,12 @@ export const flowReducer = (state = defaultFlowState, action) => {
                 },
                 tenant: action.tenant
             };
-        case 'FLOW_NAVIGATE_LOADING':
+        case FLOW_NAVIGATE_LOADING:
             return {
                 ...state,
                 isLoadingNavigation: true
             };
-        case 'FLOW_NAVIGATED':
+        case FLOW_NAVIGATE_FINISHED:
             const items = action.data.navigationItemResponses.sort(Sorts.byOrder)
                 .map(item => {
                     const data = action.data.navigationItemDataResponses.find(data => data.navigationItemId === item.id);
