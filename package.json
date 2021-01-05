@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "axios": "^0.16.2",
+    "axios": "^0.21.1",
     "bootstrap": "4.0.0-beta",
     "classnames": "^2.2.5",
     "open-iconic": "^1.1.1",
